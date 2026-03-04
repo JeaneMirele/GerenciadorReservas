@@ -54,7 +54,7 @@ sistema-gerenciador-reservas/
 
 * Clonar o repositório:
 
-git clone [https://github.com/JeaneMirele/sistema-gerenciador-reservas.git](https://github.com/JeaneMirele/sistema-gerenciador-reservas.git)
+git clone [https://github.com/JeaneMirele/GerenciadorReservas.git](https://github.com/JeaneMirele/GerenciadorReservas.git)
 
 #### Configurar o Backend:
 
