@@ -37,8 +37,9 @@ sistema-gerenciador-reservas/
 
 * **Gestão de Espaços:** Cadastro e visualização de locais disponíveis para aluguel (churrasqueiras, quadras, etc.).
 * **Controle de Usuários e Perfis:** Implementação de diferentes níveis de acesso utilizando Spring Security:
-* **ADMIN:** Gerencia moradores, espaços e todas as reservas.
-* **MORADOR:** Realiza e acompanha suas próprias reservas.
+* **GERENTE** Gerencia moradores e prédios;
+* **SINDICO** Gerencia reservas, sindicos e gerentes;
+* **MORADOR:** Realiza e acompanha suas próprias reservas;
 * **Sistema de Reservas:** Lógica para evitar conflitos de datas e horários nos espaços comuns.
 
 ## 🛠️ Como Executar o Projeto
