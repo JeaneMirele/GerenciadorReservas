@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Reserva</title>
+    <link rel="stylesheet" href="marcarreserva.css">
+</head>
+<body>
+    <header>
+        <h1>Nova Reserva</h1>
+        <div class="nav">
+            <a href="homemorador.html">Minhas Reservas</a>
+            <a href="login.html">Sair</a>
+        </div>
+    </header>
+    <div class="content">
+        <h2>Fazer Nova Reserva</h2>
+        <form action="homemorador.html" method="get">
+            <div class="form-group">
+                <label for="local">Local:</label>
+                <select id="local" name="local" required>
+                    <option value="">Selecione um local</option>
+                    <option value="piscina">Piscina</option>
+                    <option value="salao">Salão de Festas</option>
+                    <option value="churrasqueira">Churrasqueira</option>
+                    <option value="quadra">Quadra de Esportes</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="horario">Horário:</label>
+                <select id="horario" name="horario" required>
+                    <option value="">Selecione um horário</option>
+                    <option value="10:00">10:00 - 12:00</option>
+                    <option value="14:00">14:00 - 16:00</option>
+                    <option value="18:00">18:00 - 20:00</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dia">Dia:</label>
+                <input type="date" id="dia" name="dia" required>
+            </div>
+            <div class="form-group">
+                <label for="pessoas">Quantidade de Pessoas:</label>
+                <input type="number" id="pessoas" name="pessoas" min="1" max="20" required>
+            </div>
+            <button type="submit" class="btn-submit">Reservar</button>
+        </form>
+    </div>
+    <footer>
+        <img src="onda.png" alt="Onda" class ="footer-image">
+</body>
+</html>
