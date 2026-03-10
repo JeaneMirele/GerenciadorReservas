@@ -19,8 +19,7 @@ Este é um projeto **Monorepo** em que o objetivo é facilitar a gestão e reser
 * **Gerenciador de Dependências:** Maven
 
 ### Frontend
-* **Framework:** Angular
-* **Linguagem:** TypeScript
+* **Linguagem:** CSS
 
 ---
 
