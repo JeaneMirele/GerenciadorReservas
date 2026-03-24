@@ -37,4 +37,6 @@ public class Local {
     private LocalTime horarioInicio;
 
     private LocalTime horarioFim;
+
+    private String localizacao;
 }

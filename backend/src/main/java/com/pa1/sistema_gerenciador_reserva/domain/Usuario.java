@@ -19,22 +19,20 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Preencha o nome!")
     private String nome;
 
-    @NotBlank(message = "Preencha o email!")
+    @Column(unique = true)
     private String email;
 
-    @NotBlank(message = "Informe a senha!")
     private String senha;
 
-    @NotNull
+    @Column(unique = true)
     private String cpf;
 
-    @NotNull
     private String telefone;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Endereco endereco;
 
     @ManyToOne(fetch = FetchType.LAZY)

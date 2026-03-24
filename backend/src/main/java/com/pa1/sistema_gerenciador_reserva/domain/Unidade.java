@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Entity
 @Data
@@ -17,4 +19,6 @@ public class Unidade {
     private Long id;
     private String bloco;
     private String apartamento;
+    @OneToMany
+    private List<Usuario> moradores;
 }
