@@ -5,12 +5,39 @@ services:
     ports:
       - "5433:5432"
     environment:
-      POSTGRES_USERNAME: ${DATABASE_USERNAME}
+      POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
-
+    networks:
+      - reserva-network
     volumes:
-      - "postgres_data:/var/lib/postgresql/data"
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U condominio -d condominiodb" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: sistema-reserva-app
+    depends_on:
+      database:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - DATABASE_HOST=database
+      - DATABASE_PORT=5432
+    ports:
+      - "8080:8080"
+    networks:
+      - reserva-network
+
+networks:
+  reserva-network:
+    driver: bridge
 
 volumes:
   postgres_data:
