@@ -5,8 +5,11 @@ import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTO;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
-public interface UsuarioMapper {
+public interface UsuarioMapper extends GenericsMapper<Usuario, UsuarioDTO> {
     Usuario toEntity(UsuarioDTO usuarioDto);
-    UsuarioDTOResponse toDTO(Usuario usuario);
+    UsuarioDTOResponse toDTOResponse(Usuario usuario);
+    List<UsuarioDTOResponse> toDTOList(List<Usuario> usuarios);
 }

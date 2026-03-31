@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/usuario")
@@ -16,7 +18,11 @@ import org.springframework.web.bind.annotation.*;
 public class UsuarioController {
 
     final UsuarioService usuarioService;
-    private final ReservaRepository reservaRepository;
+
+    @GetMapping
+    public ResponseEntity<List<UsuarioDTOResponse>> findAll(){
+        return new ResponseEntity<>(usuarioService.findAll(), HttpStatus.OK);
+    }
 
     @GetMapping("/{email}")
     public ResponseEntity<UsuarioDTOResponse> findByEmail(@PathVariable String email){

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 @NoArgsConstructor
@@ -22,7 +23,7 @@ public class Reserva {
     @OneToOne(fetch = FetchType.EAGER)
     private Local local;
 
-    private LocalDateTime hora;
+    private LocalTime hora;
 
     private LocalDate data;
 

@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 
 @RequiredArgsConstructor
 @Service
@@ -25,10 +27,15 @@ public class UsuarioService {
     final UsuarioMapper usuarioMapper;
 
 
+    public List<UsuarioDTOResponse> findAll() {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+            return usuarioMapper.toDTOList(usuarios);
+    }
+
 
     public UsuarioDTOResponse findByEmail(String email) {
       return usuarioRepository.findByEmail(email)
-              .map(usuario -> usuarioMapper.toDTO(usuario))
+              .map(usuario -> usuarioMapper.toDTOResponse(usuario))
               .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
     }
@@ -38,13 +45,7 @@ public class UsuarioService {
         Usuario user = usuarioMapper.toEntity(usuario);
         Unidade unidadeProxy = unidadeRepository.getReferenceById(usuario.getUnidadeId());
         user.setUnidade(unidadeProxy);
-        return usuarioMapper.toDTO(usuarioRepository.save(user));
-    }
-
-    public void delete(Long id){
-     Usuario user = usuarioRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-            usuarioRepository.delete(user);
+        return usuarioMapper.toDTOResponse(usuarioRepository.save(user));
     }
 
     @Transactional
@@ -53,7 +54,13 @@ public class UsuarioService {
         usuarioRepository.findById(user.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-       return usuarioMapper.toDTO(usuarioRepository.save(user));
+        return usuarioMapper.toDTOResponse(usuarioRepository.save(user));
+    }
+
+    public void delete(Long id){
+     Usuario user = usuarioRepository.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            usuarioRepository.delete(user);
     }
 
 }
