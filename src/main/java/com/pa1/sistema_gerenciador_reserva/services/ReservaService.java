@@ -40,7 +40,8 @@ public class ReservaService {
     @Transactional
     public ReservaDTOResponse save(ReservaDTO reservaDTO) {
         Reserva reserva = reservaRepository.save(reservaMapper.toEntity(reservaDTO));
-        reserva.setStatus(StatusReserva.PENDENTE);
+        getExisteReserva(reserva);
+        reserva.setStatus(StatusReserva.APROVADA);
         return reservaMapper.toDTO(reserva);
     }
 
@@ -50,13 +51,14 @@ public class ReservaService {
         reservaRepository.findById(reserva.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Reserva não encontrada"));
 
+        getExisteReserva(reserva);
         LocalDate hoje = LocalDate.now();
         LocalDate dataDaReserva = reserva.getData();
 
         if (hoje.isAfter(dataDaReserva.minusDays(7))) {
             throw new RuntimeException("Alterações só são permitidas com no mínimo 7 dias de antecedência.");
         }
-        reserva.setStatus(StatusReserva.PENDENTE);
+        reserva.setStatus(StatusReserva.APROVADA);
         return reservaMapper.toDTO(reservaRepository.save(reserva));
     }
 
@@ -76,5 +78,14 @@ public class ReservaService {
             throw new RuntimeException("Esta reserva já está cancelada.");
         }
         reserva.setStatus(StatusReserva.CANCELADA);
+    }
+
+    public void getExisteReserva(Reserva reserva) {
+
+        Boolean existeReserva = reservaRepository.existeReservaNoMesmoHorario(reserva.getLocal().getNome(), reserva.getData(), StatusReserva.APROVADA, reserva.getHora());
+
+        if (existeReserva) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
     }
 }
