@@ -36,19 +36,19 @@ public class ReservaController {
 
     @PostMapping
     public ResponseEntity<ReservaDTOResponse> create (@RequestBody ReservaDTO reserva){
-        ReservaDTOResponse reservaDTOResponse = reservaService.save(reserva);
-        return ResponseEntity.status(HttpStatus.CREATED).body(reservaDTOResponse);
+        ReservaDTOResponse reservaSalva = reservaService.save(reserva);
+        return ResponseEntity.status(HttpStatus.CREATED).body(reservaSalva);
     }
 
-    @PutMapping
-    public ResponseEntity<ReservaDTOResponse> update (@RequestBody ReservaDTO reserva){
-        ReservaDTOResponse reservaDTOResponse = reservaService.update(reserva);
-        return ResponseEntity.status(HttpStatus.OK).body(reservaDTOResponse);
+    @PutMapping("/{id}")
+    public ResponseEntity<ReservaDTOResponse> update (@RequestBody ReservaDTO reserva, @PathVariable Long id){
+        ReservaDTOResponse reservaAtualizada = reservaService.update(reserva, id);
+        return ResponseEntity.status(HttpStatus.OK).body(reservaAtualizada);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> cancelar (@PathVariable Long id){
-        reservaService.cancelar(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<ReservaDTOResponse> cancelar (@PathVariable Long id){
+        ReservaDTOResponse reservaCancelada = reservaService.cancelar(id);
+        return ResponseEntity.status(HttpStatus.OK).body(reservaCancelada);
     }
 }

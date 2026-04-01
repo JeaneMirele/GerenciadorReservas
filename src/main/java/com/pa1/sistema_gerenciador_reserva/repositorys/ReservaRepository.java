@@ -24,7 +24,8 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
             "WHERE r.local = :Nomelocal " +
             "AND r.data = :data " +
             "AND r.status = :status " +
-            "AND r.hora = :hora")
-    boolean existeReservaNoMesmoHorario(String Nomelocal, LocalDate data, StatusReserva status, LocalTime hora);
+            "AND r.hora = :hora " +
+            "AND r.id != :id")
+    boolean existeReservaNoMesmoHorario(String Nomelocal, LocalDate data, StatusReserva status, LocalTime hora, Long id);
 
 }

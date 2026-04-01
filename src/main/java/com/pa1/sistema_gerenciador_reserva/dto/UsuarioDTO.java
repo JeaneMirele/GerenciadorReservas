@@ -22,6 +22,6 @@ public class UsuarioDTO {
 
     private EnderecoDTO endereco;
 
-    private Long unidadeId;
+    private UnidadeDTO unidade;
 
 }

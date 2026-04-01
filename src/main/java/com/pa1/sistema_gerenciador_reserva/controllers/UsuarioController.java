@@ -35,11 +35,10 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUsuario);
     }
 
-    @PutMapping
-    public ResponseEntity<UsuarioDTOResponse> update (@RequestBody UsuarioDTO usuario){
-        UsuarioDTOResponse savedUsuario = usuarioService.update(usuario);
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioDTOResponse> update (@RequestBody UsuarioDTO usuario, @PathVariable Long id){
+        UsuarioDTOResponse savedUsuario = usuarioService.update(usuario, id);
         return ResponseEntity.status(HttpStatus.OK).body(savedUsuario);
-
     }
 
     @DeleteMapping("/{id}")

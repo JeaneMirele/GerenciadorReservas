@@ -1,13 +1,11 @@
 package com.pa1.sistema_gerenciador_reserva.services;
 
-import com.pa1.sistema_gerenciador_reserva.domain.Endereco;
+
 import com.pa1.sistema_gerenciador_reserva.domain.Unidade;
 import com.pa1.sistema_gerenciador_reserva.domain.Usuario;
 import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTO;
-import com.pa1.sistema_gerenciador_reserva.mapper.EnderecoMapper;
 import com.pa1.sistema_gerenciador_reserva.mapper.UsuarioMapper;
-import com.pa1.sistema_gerenciador_reserva.repositorys.EnderecoRepository;
 import com.pa1.sistema_gerenciador_reserva.repositorys.UnidadeRepository;
 import com.pa1.sistema_gerenciador_reserva.repositorys.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,30 +34,29 @@ public class UsuarioService {
     public UsuarioDTOResponse findByEmail(String email) {
       return usuarioRepository.findByEmail(email)
               .map(usuario -> usuarioMapper.toDTOResponse(usuario))
-              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
     }
 
     @Transactional
     public UsuarioDTOResponse save(UsuarioDTO usuario) {
         Usuario user = usuarioMapper.toEntity(usuario);
-        Unidade unidadeProxy = unidadeRepository.getReferenceById(usuario.getUnidadeId());
-        user.setUnidade(unidadeProxy);
         return usuarioMapper.toDTOResponse(usuarioRepository.save(user));
     }
 
     @Transactional
-    public UsuarioDTOResponse update(UsuarioDTO usuarioDTO) {
-        Usuario user = usuarioMapper.toEntity(usuarioDTO);
-        usuarioRepository.findById(user.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public UsuarioDTOResponse update(UsuarioDTO usuarioDTO, Long id) {
+        Usuario user = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
+        usuarioMapper.updateEntityFromDto(usuarioDTO, user);
         return usuarioMapper.toDTOResponse(usuarioRepository.save(user));
     }
 
+    @Transactional
     public void delete(Long id){
      Usuario user = usuarioRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
             usuarioRepository.delete(user);
     }
 

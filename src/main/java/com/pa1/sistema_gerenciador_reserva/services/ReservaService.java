@@ -39,38 +39,38 @@ public class ReservaService {
 
     @Transactional
     public ReservaDTOResponse save(ReservaDTO reservaDTO) {
-        Reserva reserva = reservaRepository.save(reservaMapper.toEntity(reservaDTO));
-        getExisteReserva(reserva);
-        reserva.setStatus(StatusReserva.APROVADA);
-        return reservaMapper.toDTO(reserva);
-    }
-
-    @Transactional
-    public ReservaDTOResponse update(ReservaDTO reservaDTO) {
         Reserva reserva = reservaMapper.toEntity(reservaDTO);
-        reservaRepository.findById(reserva.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Reserva não encontrada"));
-
-        getExisteReserva(reserva);
-        LocalDate hoje = LocalDate.now();
-        LocalDate dataDaReserva = reserva.getData();
-
-        if (hoje.isAfter(dataDaReserva.minusDays(7))) {
-            throw new RuntimeException("Alterações só são permitidas com no mínimo 7 dias de antecedência.");
-        }
+        validarDisponibilidade(reserva);
         reserva.setStatus(StatusReserva.APROVADA);
+
         return reservaMapper.toDTO(reservaRepository.save(reserva));
     }
 
     @Transactional
-    public void cancelar(Long id) {
+    public ReservaDTOResponse update(ReservaDTO reservaDTO, Long id) {
         Reserva reserva = reservaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Reserva não encontrada"));
 
         LocalDate hoje = LocalDate.now();
-        LocalDate dataDaReserva = reserva.getData();
 
-        if (hoje.isAfter(dataDaReserva.minusDays(14))) {
+        if (hoje.isAfter(reserva.getData().minusDays(7))) {
+            throw new RuntimeException("Alterações só são permitidas com no mínimo 7 dias de antecedência.");
+        }
+
+        reservaMapper.updateEntityFromDto(reservaDTO, reserva);
+        validarDisponibilidade(reserva);
+
+        return reservaMapper.toDTO(reservaRepository.save(reserva));
+    }
+
+    @Transactional
+    public ReservaDTOResponse cancelar(Long id) {
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Reserva não encontrada"));
+
+        LocalDate hoje = LocalDate.now();
+
+        if (hoje.isAfter(reserva.getData().minusDays(14))) {
             throw new RuntimeException("Cancelamentos só são permitidos com no mínimo 14 dias de antecedência.");
         }
 
@@ -78,14 +78,16 @@ public class ReservaService {
             throw new RuntimeException("Esta reserva já está cancelada.");
         }
         reserva.setStatus(StatusReserva.CANCELADA);
+
+        return reservaMapper.toDTO(reservaRepository.save(reserva));
     }
 
-    public void getExisteReserva(Reserva reserva) {
+    public void validarDisponibilidade(Reserva reserva) {
 
-        Boolean existeReserva = reservaRepository.existeReservaNoMesmoHorario(reserva.getLocal().getNome(), reserva.getData(), StatusReserva.APROVADA, reserva.getHora());
+        Boolean existeReserva = reservaRepository.existeReservaNoMesmoHorario(reserva.getLocal().getNome(), reserva.getData(), StatusReserva.APROVADA, reserva.getHora(), reserva.getId());
 
         if (existeReserva) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe uma reserva para este local neste horário.");
         }
     }
 }
