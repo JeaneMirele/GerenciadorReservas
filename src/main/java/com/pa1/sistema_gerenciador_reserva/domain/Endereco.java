@@ -7,8 +7,11 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
-
+@SQLDelete(sql = "UPDATE endereco SET ativo = false WHERE id = ?")
+@SQLRestriction("ativo = true")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,5 +31,7 @@ public class Endereco {
     private String cep;
 
     private String numero;
+
+    private Boolean ativo = true;
 
 }

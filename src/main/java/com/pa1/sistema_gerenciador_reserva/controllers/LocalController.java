@@ -3,8 +3,6 @@ package com.pa1.sistema_gerenciador_reserva.controllers;
 
 import com.pa1.sistema_gerenciador_reserva.dto.LocalDTO;
 import com.pa1.sistema_gerenciador_reserva.dto.LocalDTOResponse;
-import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTO;
-import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.services.LocalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/local")
+@RequestMapping("/locais")
 @RequiredArgsConstructor
 public class LocalController {
     final LocalService localService;

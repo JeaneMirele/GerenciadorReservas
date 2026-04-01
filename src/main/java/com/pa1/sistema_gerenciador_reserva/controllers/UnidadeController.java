@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/unidade")
+@RequestMapping("/unidades")
 public class UnidadeController {
     private final UnidadeService unidadeService;
 

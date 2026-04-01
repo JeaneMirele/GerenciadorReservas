@@ -2,7 +2,6 @@ package com.pa1.sistema_gerenciador_reserva.controllers;
 
 import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTO;
-import com.pa1.sistema_gerenciador_reserva.repositorys.ReservaRepository;
 import com.pa1.sistema_gerenciador_reserva.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/usuarios")
 @RequiredArgsConstructor
 public class UsuarioController {
 

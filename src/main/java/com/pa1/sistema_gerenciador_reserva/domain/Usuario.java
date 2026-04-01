@@ -7,15 +7,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@SQLDelete(sql = "UPDATE usuario SET ativo = false WHERE id = ?")
+@SQLRestriction("ativo = true")
 @Data
-@Getter
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,4 +46,6 @@ public class Usuario {
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
+
+    private Boolean ativo = true;
 }

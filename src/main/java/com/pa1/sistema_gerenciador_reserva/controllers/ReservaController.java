@@ -2,8 +2,6 @@ package com.pa1.sistema_gerenciador_reserva.controllers;
 
 import com.pa1.sistema_gerenciador_reserva.dto.ReservaDTO;
 import com.pa1.sistema_gerenciador_reserva.dto.ReservaDTOResponse;
-import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTO;
-import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.services.ReservaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reserva")
+@RequestMapping("/reservas")
 @RequiredArgsConstructor
 public class ReservaController {
     private final ReservaService reservaService;
