@@ -22,7 +22,7 @@ public class ReservaController {
         return new ResponseEntity<>(reservaService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping(params = "data")
     public ResponseEntity<List<ReservaDTOResponse>> findByDate(@RequestParam LocalDate data) {
         return new ResponseEntity<>(reservaService.findByDate(data), HttpStatus.OK);
     }

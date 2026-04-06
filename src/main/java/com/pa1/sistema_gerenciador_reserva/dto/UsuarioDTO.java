@@ -1,8 +1,11 @@
 package com.pa1.sistema_gerenciador_reserva.dto;
 
+import com.pa1.sistema_gerenciador_reserva.domain.Role;
 import jakarta.validation.constraints.Email;
 
+import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.br.CPF;
+import java.util.Set;
 
 public record UsuarioDTO(
         String nome,
@@ -11,6 +14,7 @@ public record UsuarioDTO(
         @CPF String cpf,
         String telefone,
         EnderecoDTO endereco,
-        UnidadeDTO unidade
+        UnidadeDTO unidade,
+        Set<Role> roles
 ) {
 }
