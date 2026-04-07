@@ -11,6 +11,7 @@ import com.pa1.sistema_gerenciador_reserva.services.AuthService;
 import com.pa1.sistema_gerenciador_reserva.services.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -32,13 +36,17 @@ public class LoginController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDTO> login(@RequestBody @Valid LoginDTO dados) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginDTO dados) {
         var authenticationToken = new UsernamePasswordAuthenticationToken(dados.email(), dados.senha());
         var authentication = manager.authenticate(authenticationToken);
 
         var usuario = (Usuario) authentication.getPrincipal();
         if (usuario.getPrecisaTrocarSenha()) {
-            throw new RuntimeException("FIRST_ACCESS_REQUIRED");
+            Map<String, String> resposta = new HashMap<>();
+            resposta.put("mensagem", "TROCA_SENHA_OBRIGATORIA");
+            resposta.put("email", usuario.getEmail());
+
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resposta);
         }
 
         var jwtToken = jwtService.gerarToken(usuario);
@@ -60,7 +68,7 @@ public class LoginController {
     }
 
     @PostMapping("/primeiro-acesso")
-    public ResponseEntity<TokenResponseDTO> primeiroAcesso(@RequestBody @Valid PrimeiroAcessoDTO dados) {
+    public ResponseEntity<?> primeiroAcesso(@RequestBody @Valid PrimeiroAcessoDTO dados) {
         var authenticationToken = new UsernamePasswordAuthenticationToken(dados.email(), dados.senhaProvisoria());
         var authentication = manager.authenticate(authenticationToken);
 
@@ -74,11 +82,10 @@ public class LoginController {
         usuario.setPrecisaTrocarSenha(false);
         usuarioRepository.save(usuario);
 
-        var jwtToken = jwtService.gerarToken(usuario);
-        var refreshToken = authService.criarRefreshToken(usuario);
+        Map<String, String> resposta = new HashMap<>();
+        resposta.put("mensagem", "Senha atualizada com sucesso! Por favor, realize o login com sua nova senha.");
 
-        return ResponseEntity.ok(new TokenResponseDTO(jwtToken, refreshToken.getToken(), "Bearer"));
-
+        return ResponseEntity.ok(resposta);
     }
 
 }

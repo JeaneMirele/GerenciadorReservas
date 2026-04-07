@@ -3,10 +3,7 @@ package com.pa1.sistema_gerenciador_reserva.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,6 +18,8 @@ import java.util.stream.Collectors;
 @SQLDelete(sql = "UPDATE usuario SET ativo = false WHERE id = ?")
 @SQLRestriction("ativo = true")
 @Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

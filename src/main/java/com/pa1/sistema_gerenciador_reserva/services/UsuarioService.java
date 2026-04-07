@@ -2,6 +2,7 @@ package com.pa1.sistema_gerenciador_reserva.services;
 
 import com.pa1.sistema_gerenciador_reserva.config.SecurityUserValidator;
 import com.pa1.sistema_gerenciador_reserva.domain.Usuario;
+import com.pa1.sistema_gerenciador_reserva.dto.CadastroDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTO;
 import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.mapper.UsuarioMapper;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +31,7 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final SecurityUserValidator securityUserValidator;
 
-    @PreAuthorize("hasAnyRole('GERENTE', 'SINDICO')")
+    @PreAuthorize("hasAnyAuthority('GERENTE', 'SINDICO')")
     public List<UsuarioDTOResponse> findAll() {
         return usuarioMapper.toDTOList(usuarioRepository.findAll());
     }
@@ -44,26 +46,28 @@ public class UsuarioService {
 
     @Transactional
     @PreAuthorize("@securityUserValidator.podeGerenciar(authentication, #dto.roles())")
-    public UsuarioDTOResponse save(UsuarioDTO dto) {
+    public CadastroDTOResponse save(UsuarioDTO dto) {
         Usuario user = usuarioMapper.toEntity(dto);
-        String senhaProvisoria = UUID.randomUUID().toString().substring(0, 8);
+        String senhaProvisoria = UUID.randomUUID().toString().substring(0, 6);
 
         user.setSenha(passwordEncoder.encode(senhaProvisoria));
         user.setPrecisaTrocarSenha(true);
+        Usuario usuarioSalvo = usuarioRepository.save(user);
+        CadastroDTOResponse cadastro = usuarioMapper.toDTOCadastro(usuarioSalvo);
+        cadastro.setSenha(senhaProvisoria);
 
-        return usuarioMapper.toDTOResponse(usuarioRepository.save(user));
+        return cadastro;
+
     }
 
     @Transactional
+    @PreAuthorize("@securityUserValidator.podeGerenciar(authentication, #dto.roles())")
     public UsuarioDTOResponse update(UsuarioDTO dto, Long id) {
         Usuario userExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (!securityUserValidator.podeGerenciar(auth, userExistente.getRoles()) ||
-                !securityUserValidator.podeGerenciar(auth, dto.roles())) {
-            throw new AccessDeniedException("Acesso negado para alterar este perfil.");
+        if (dto.roles() != null && !dto.roles().isEmpty()) {
+            userExistente.setRoles(new HashSet<>(dto.roles()));
         }
 
         usuarioMapper.updateEntityFromDto(dto, userExistente);

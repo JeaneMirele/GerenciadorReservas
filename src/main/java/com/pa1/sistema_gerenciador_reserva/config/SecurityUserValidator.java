@@ -11,17 +11,18 @@ import java.util.Set;
 public class SecurityUserValidator {
 
     public boolean podeGerenciar(Authentication auth, Set<Role> rolesAlvo) {
-        boolean isGerente = temRole(auth, "GERENTE");
+        if (rolesAlvo == null || rolesAlvo.isEmpty()) {
+            return true;
+        }
+
         boolean isSindico = temRole(auth, "SINDICO");
+        boolean isGerente = temRole(auth, "GERENTE");
 
-        boolean requerGerente = rolesAlvo.contains(Role.MORADOR);
-        boolean requerSindico = rolesAlvo.contains(Role.GERENTE) || rolesAlvo.contains(Role.SINDICO);
-
-        if (requerSindico) {
+        if (rolesAlvo.contains(Role.SINDICO) || rolesAlvo.contains(Role.GERENTE)) {
             return isSindico;
         }
 
-        if (requerGerente) {
+        if (rolesAlvo.contains(Role.MORADOR)) {
             return isGerente;
         }
 

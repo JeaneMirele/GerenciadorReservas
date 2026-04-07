@@ -1,6 +1,7 @@
 package com.pa1.sistema_gerenciador_reserva.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,7 +30,7 @@ public class Local {
     @NotNull(message = "Preencha a capacidade do local")
     private Integer capacidade;
 
-    @NotBlank
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Duration duracao;
 
     private Double taxaReserva;

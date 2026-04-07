@@ -1,8 +1,10 @@
 package com.pa1.sistema_gerenciador_reserva.controllers;
 
+import com.pa1.sistema_gerenciador_reserva.dto.CadastroDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTO;
 import com.pa1.sistema_gerenciador_reserva.services.UsuarioService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +25,14 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/email/{email}")
     public ResponseEntity<UsuarioDTOResponse> findByEmail(@PathVariable String email){
         return new ResponseEntity<>(usuarioService.findByEmail(email), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioDTOResponse> create (@RequestBody UsuarioDTO usuario){
-        UsuarioDTOResponse savedUsuario = usuarioService.save(usuario);
+    public ResponseEntity<CadastroDTOResponse> create (@RequestBody @Valid UsuarioDTO usuario){
+        CadastroDTOResponse savedUsuario = usuarioService.save(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUsuario);
     }
 

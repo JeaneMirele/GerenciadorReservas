@@ -7,5 +7,5 @@ import com.pa1.sistema_gerenciador_reserva.domain.Usuario;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record ReservaDTOResponse(Long id, Local local, LocalTime hora, LocalDate data, Usuario morador, StatusReserva status) {
+public record ReservaDTOResponse(Long id, LocalDTOResponse local, LocalTime hora, LocalDate data, UsuarioDTOResponse morador, StatusReserva status) {
 }
