@@ -40,7 +40,6 @@ public class Usuario implements UserDetails {
 
     private String telefone;
 
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Endereco endereco;
 

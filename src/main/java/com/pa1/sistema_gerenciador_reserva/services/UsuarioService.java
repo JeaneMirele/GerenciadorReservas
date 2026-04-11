@@ -8,6 +8,7 @@ import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.mapper.UsuarioMapper;
 import com.pa1.sistema_gerenciador_reserva.repositorys.UsuarioRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -20,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -42,6 +44,12 @@ public class UsuarioService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         return usuarioMapper.toDTOResponse(user);
+    }
+
+    @PreAuthorize("hasAnyAuthority('GERENTE', 'SINDICO')")
+    public Usuario findById(Long id) {
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
     }
 
     @Transactional
