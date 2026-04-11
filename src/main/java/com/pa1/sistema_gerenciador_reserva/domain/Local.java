@@ -24,10 +24,8 @@ public class Local {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Preencha o nome do local!")
     private String nome;
 
-    @NotNull(message = "Preencha a capacidade do local")
     private Integer capacidade;
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
