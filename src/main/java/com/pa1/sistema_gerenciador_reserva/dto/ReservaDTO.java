@@ -7,7 +7,8 @@ import java.time.LocalTime;
 @Data
 public class ReservaDTO {
     private Long id_local;
-    private LocalTime hora;
+    private LocalTime horaEntrada;
+    private LocalTime horaSaida;
     private LocalDate data;
     private Long id_morador;
 }

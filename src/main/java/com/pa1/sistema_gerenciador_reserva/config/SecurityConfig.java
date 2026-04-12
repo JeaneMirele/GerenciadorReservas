@@ -3,6 +3,7 @@ package com.pa1.sistema_gerenciador_reserva.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -34,12 +35,14 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/**").permitAll()
-                    .requestMatchers("/usuarios/**").hasAnyAuthority("SINDICO", "GERENTE")
-                    .requestMatchers("/locais/**").hasAuthority("SINDICO")
+                    .requestMatchers("/usuarios/**").hasAnyAuthority("SINDICO", "GERENTE", "MORADOR")
+                    .requestMatchers("/locais/**").authenticated()
                     .requestMatchers("/reservas/**").hasAnyAuthority("MORADOR", "SINDICO")
-                    .requestMatchers("/unidades/**", "/enderecos/**").hasAuthority("GERENTE")
-                    .anyRequest().permitAll()
-            )
+                    .requestMatchers("/unidades/**").hasAuthority("GERENTE")
+                    .requestMatchers("/enderecos/**").authenticated()
+                    .requestMatchers("/arquivos/**").permitAll()
+                    .anyRequest().permitAll())
+
             .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
         }
@@ -48,7 +51,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173", "http://localhost:8081", "http://localhost:8080"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);

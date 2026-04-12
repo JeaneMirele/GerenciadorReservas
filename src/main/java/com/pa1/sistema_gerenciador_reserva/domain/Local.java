@@ -38,4 +38,6 @@ public class Local {
     private LocalTime horarioFim;
 
     private String localizacao;
+
+    private String fotoUrl;
 }

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,10 +100,19 @@ public class ReservaService {
 
     public void validarDisponibilidade(Reserva reserva) {
 
-        Boolean existeReserva = reservaRepository.existeReservaNoMesmoHorario(reserva.getLocal().getId(), reserva.getData(), StatusReserva.APROVADA, reserva.getHora(), reserva.getId());
 
-        if (existeReserva) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe uma reserva para este local neste horário.");
+
+        boolean conflito = reservaRepository.existeReservaNoMesmoHorario(
+                reserva.getLocal().getId(),
+                reserva.getData(),
+                StatusReserva.CANCELADA,
+                reserva.getHoraEntrada(),
+                reserva.getHoraSaida(),
+                reserva.getId()
+        );
+
+        if (conflito) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Este local já possui um agendamento para este período.");
         }
     }
 }

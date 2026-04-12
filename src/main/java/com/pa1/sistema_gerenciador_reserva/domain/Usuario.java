@@ -55,6 +55,9 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private Boolean precisaTrocarSenha;
 
+    @Column(name = "foto_perfil")
+    private String fotoPerfil;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

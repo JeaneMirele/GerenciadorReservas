@@ -1,8 +1,11 @@
 package com.pa1.sistema_gerenciador_reserva.dto;
 
+import com.pa1.sistema_gerenciador_reserva.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 
 @Data
@@ -23,5 +26,7 @@ public class CadastroDTOResponse {
     private String telefone;
 
     private Boolean precisaTrocarSenha;
+
+    private Set<Role> roles;
 }
 

@@ -23,7 +23,9 @@ public class Reserva {
     @OneToOne(fetch = FetchType.EAGER)
     private Local local;
 
-    private LocalTime hora;
+    private LocalTime horaEntrada;
+
+    private LocalTime  horaSaida;
 
     private LocalDate data;
 

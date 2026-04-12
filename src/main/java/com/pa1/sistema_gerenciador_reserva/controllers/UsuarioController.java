@@ -1,15 +1,20 @@
 package com.pa1.sistema_gerenciador_reserva.controllers;
 
+import com.pa1.sistema_gerenciador_reserva.domain.Usuario;
 import com.pa1.sistema_gerenciador_reserva.dto.CadastroDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTO;
 import com.pa1.sistema_gerenciador_reserva.services.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -47,5 +52,16 @@ public class UsuarioController {
         usuarioService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @PatchMapping("/meu-perfil/foto")
+    public ResponseEntity<UsuarioDTOResponse> atualizarMinhaFoto(
+            @RequestParam("arquivo") MultipartFile arquivo) {
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        UsuarioDTOResponse atualizado = usuarioService.atualizarFoto(email, arquivo);
+        return ResponseEntity.ok(atualizado);
+    }
+
 
 }

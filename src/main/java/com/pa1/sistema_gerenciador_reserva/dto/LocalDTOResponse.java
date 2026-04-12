@@ -1,6 +1,5 @@
 package com.pa1.sistema_gerenciador_reserva.dto;
 
-
 import java.time.Duration;
 import java.time.LocalTime;
 
@@ -12,5 +11,6 @@ public record LocalDTOResponse(
     Double taxaReserva,
     LocalTime horarioInicio,
     LocalTime horarioFim,
-    String localizacao
+    String localizacao,
+    String fotoUrl
 ){}
