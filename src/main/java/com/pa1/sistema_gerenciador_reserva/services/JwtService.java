@@ -8,16 +8,18 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.pa1.sistema_gerenciador_reserva.domain.Usuario;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 
 @Getter
 @Service
 public class JwtService {
+
     @Value("${SECURITY_KEY}")
     private String secret;
 
@@ -36,7 +38,7 @@ public class JwtService {
                     .withExpiresAt(gerarDataExpiracao())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("Erro ao gerar token jwt", exception);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao gerar token de acesso");
         }
     }
 
@@ -49,7 +51,7 @@ public class JwtService {
                     .verify(tokenJWT)
                     .getSubject();
         } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Token JWT inválido ou expirado");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sessão inválida ou expirada");
         }
     }
 
@@ -61,7 +63,7 @@ public class JwtService {
                     .build()
                     .verify(tokenJWT);
         } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Token JWT inválido ou expirado");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token JWT inválido ou expirado");
         }
     }
 
@@ -71,4 +73,3 @@ public class JwtService {
                 .toInstant(ZoneOffset.of("-03:00"));
     }
 }
-

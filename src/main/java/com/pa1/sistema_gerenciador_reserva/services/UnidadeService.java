@@ -24,6 +24,7 @@ public class UnidadeService {
         return unidadeMapper.toDTOList(unidades);
     }
 
+
     public UnidadeDTOResponse findById(Long id) {
         return unidadeRepository.findById(id)
                 .map(unidadeMapper::toDTOResponse)

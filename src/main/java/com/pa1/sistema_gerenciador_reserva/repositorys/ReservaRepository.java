@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
     @Query("SELECT r FROM Reserva r JOIN FETCH r.morador WHERE r.data = :data")
-    List<Reserva> findByDate(LocalDate data);
+    Optional<List<Reserva>> findByDate(LocalDate data);
 
     @Query("SELECT COUNT(r) > 0 FROM Reserva r " +
             "WHERE r.local.id = :id_local " +

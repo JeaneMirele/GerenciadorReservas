@@ -29,7 +29,7 @@ public class Reserva {
 
     private LocalDate data;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Usuario morador;
 
     @Enumerated(EnumType.STRING)
