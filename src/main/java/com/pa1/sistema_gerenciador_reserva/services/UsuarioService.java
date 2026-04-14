@@ -55,7 +55,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    @PreAuthorize("@securityUserValidator.podeGerenciar(authentication, #dto.roles())")
+    @PreAuthorize("@securityUserValidator.podeGerenciar(authentication, #dto.getRoles())")
     public CadastroDTOResponse save(UsuarioDTO dto) {
         Unidade unidade = unidadeRepository.findById(dto.getId_unidade())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi possível cadastrar: Unidade não encontrada"));
@@ -74,7 +74,6 @@ public class UsuarioService {
     }
 
     @Transactional
-    @PreAuthorize("@securityUserValidator.podeGerenciar(authentication, #dto.roles())")
     public UsuarioDTOResponse update(UsuarioDTO dto, Long id) {
         Usuario userExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi possível atualizar: Usuário não encontrado"));
@@ -114,5 +113,23 @@ public class UsuarioService {
 
         Usuario salvo = usuarioRepository.save(user);
         return usuarioMapper.toDTOResponse(salvo, baseUrl);
+    }
+
+    @Transactional
+    public void alterarSenha(String email, AlterarSenhaDTO dto) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
+        if (!passwordEncoder.matches(dto.senhaAtual(), usuario.getSenha())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A senha atual está incorreta.");
+        }
+
+
+        if (passwordEncoder.matches(dto.novaSenha(), usuario.getSenha())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A nova senha deve ser diferente da atual.");
+        }
+
+        usuario.setSenha(passwordEncoder.encode(dto.novaSenha()));
+        usuarioRepository.save(usuario);
     }
 }

@@ -1,6 +1,7 @@
 package com.pa1.sistema_gerenciador_reserva.controllers;
 
 import com.pa1.sistema_gerenciador_reserva.domain.Usuario;
+import com.pa1.sistema_gerenciador_reserva.dto.AlterarSenhaDTO;
 import com.pa1.sistema_gerenciador_reserva.dto.CadastroDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.dto.UsuarioDTO;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -63,5 +66,15 @@ public class UsuarioController {
         return ResponseEntity.ok(atualizado);
     }
 
+    @PostMapping("/alterar-senha")
+    public ResponseEntity<?> alterarSenha(@RequestBody @Valid AlterarSenhaDTO dados) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        usuarioService.alterarSenha(email, dados);
+
+        Map<String, String> resposta = new HashMap<>();
+        resposta.put("message", "Senha alterada com sucesso!");
+        return ResponseEntity.ok(resposta);
+    }
 
 }
