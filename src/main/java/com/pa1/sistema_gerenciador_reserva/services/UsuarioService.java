@@ -53,15 +53,18 @@ public class UsuarioService {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado com o ID: " + id));
     }
-
     @Transactional
     @PreAuthorize("@securityUserValidator.podeGerenciar(authentication, #dto.getRoles())")
     public CadastroDTOResponse save(UsuarioDTO dto) {
-        Unidade unidade = unidadeRepository.findById(dto.getId_unidade())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi possível cadastrar: Unidade não encontrada"));
-
         Usuario user = usuarioMapper.toEntity(dto);
-        user.setUnidade(unidade);
+
+        if (dto.getId_unidade() != null) {
+            Unidade unidade = unidadeRepository.findById(dto.getId_unidade())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi possível cadastrar: Unidade não encontrada"));
+            user.setUnidade(unidade);
+        } else {
+            user.setUnidade(null);
+        }
 
         String senhaProvisoria = UUID.randomUUID().toString().substring(0, 6);
         user.setSenha(passwordEncoder.encode(senhaProvisoria));
@@ -72,6 +75,7 @@ public class UsuarioService {
         cadastro.setSenha(senhaProvisoria);
         return cadastro;
     }
+
 
     @Transactional
     public UsuarioDTOResponse update(UsuarioDTO dto, Long id) {
