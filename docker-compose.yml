@@ -27,13 +27,11 @@ services:
     env_file:
       - .env
     environment:
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       - DATABASE_HOST=database
       - DATABASE_PORT=5432
       - UPLOAD_DIR=/app/uploads
     ports:
       - "8080:8080"
-      - "5005:5005"
     volumes:
       - ./meus-uploads:/app/uploads
     networks:
