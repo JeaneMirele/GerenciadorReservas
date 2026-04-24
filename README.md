@@ -150,7 +150,7 @@ Após a troca bem-sucedida, realize o login para receber o Token de acesso (JWT)
 
 ````json
 {
-  "email": "morador@condo.com",
+  "email": "morador@condominio.com",
   "senha": "SuaNovaSenhaSegura123"
 }
 ````
@@ -167,4 +167,27 @@ Após a troca bem-sucedida, realize o login para receber o Token de acesso (JWT)
 
 Nota: Agora todos os endpoints restritos à role MORADOR estarão liberados para teste.
 
+## Endpoints
+### 🔑 Guia de Endpoints por Perfil (RBAC)
+
+| Categoria | Endpoint | Síndico | Gerente | Morador |
+| :--- | :--- | :---: | :---: | :---: |
+| **Autenticação** | `POST /auth/login` | ✅ | ✅ | ✅ |
+| **Autenticação** | `POST /auth/primeiro-acesso` | ✅ | ✅ | ✅ |
+| **Autenticação** | `POST /auth/refresh` | ✅ | ✅ | ✅ |
+| **Usuários** | `POST /usuarios` (Criar novo) | ✅ | ✅ | ❌ |
+| **Usuários** | `GET /usuarios` (Listar todos) | ✅ | ✅ | ❌ |
+| **Usuários** | `GET /usuarios/email/{email}` | ✅ | ✅ | ❌ |
+| **Usuários** | `PATCH /usuarios/meu-perfil/foto` | ✅ | ✅ | ✅ |
+| **Usuários** | `DELETE /usuarios/{id}` | ✅ | ❌ | ❌ |
+| **Locais** | `POST /locais` (Cadastrar Área) | ✅ | ❌ | ❌ |
+| **Locais** | `GET /locais` (Ver Áreas Comuns) | ✅ | ✅ | ✅ |
+| **Locais** | `PUT /locais/{id}` (Editar) | ✅ | ❌ | ❌ |
+| **Locais** | `PATCH /locais/{id}/foto` | ✅ | ❌ | ❌ |
+| **Reservas** | `POST /reservas` (Realizar Reserva) | ✅ | ✅ | ✅ |
+| **Reservas** | `GET /reservas` (Filtrar por data) | ✅ | ✅ | ✅ |
+| **Reservas** | `DELETE /reservas/{id}` (Cancelar) | ✅ | ✅ | ✅ |
+| **Unidades** | `POST /unidades` (Cadastrar apto) | ✅ | ✅ | ❌ |
+| **Unidades** | `GET /unidades` (Listar unidades) | ✅ | ✅ | ❌ |
+| **Arquivos** | `GET /arquivos/{nome}` (Ver fotos) | ✅ | ✅ | ✅ |
 
