@@ -19,7 +19,7 @@ services:
       retries: 5
 
   app:
-    build: .
+    image: 986807/gerenciador-reservas:latest
     container_name: sistema-reserva-app
     depends_on:
       database:

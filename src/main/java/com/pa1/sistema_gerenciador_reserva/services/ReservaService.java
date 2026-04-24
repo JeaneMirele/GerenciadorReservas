@@ -12,6 +12,8 @@ import com.pa1.sistema_gerenciador_reserva.repositorys.ReservaRepository;
 import com.pa1.sistema_gerenciador_reserva.repositorys.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -84,10 +86,15 @@ public class ReservaService {
         Reserva reserva = reservaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva não encontrada"));
 
-        LocalDate hoje = LocalDate.now();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isSindico = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_SINDICO"));
 
-        if (hoje.isAfter(reserva.getData().minusDays(14))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cancelamentos só são permitidos com no mínimo 14 dias de antecedência.");
+        if (!isSindico) {
+            LocalDate hoje = LocalDate.now();
+            if (hoje.isAfter(reserva.getData().minusDays(14))) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cancelamentos só são permitidos com no mínimo 14 dias de antecedência.");
+            }
         }
 
         if (reserva.getStatus() == StatusReserva.CANCELADA) {
