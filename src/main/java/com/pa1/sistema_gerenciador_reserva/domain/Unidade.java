@@ -22,7 +22,7 @@ public class Unidade {
     private Long id;
     private String bloco;
     private String apartamento;
-    @OneToMany
+    @OneToMany(mappedBy = "unidade")
     private List<Usuario> moradores;
     private Boolean ativo = true;
 }

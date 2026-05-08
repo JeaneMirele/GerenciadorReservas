@@ -82,6 +82,8 @@ public class UsuarioService {
         Usuario userExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi possível atualizar: Usuário não encontrado"));
 
+        usuarioMapper.updateEntityFromDto(dto, userExistente);
+
         if (dto.getRoles() != null && !dto.getRoles().isEmpty()) {
             userExistente.setRoles(new HashSet<>(dto.getRoles()));
         }
@@ -93,7 +95,6 @@ public class UsuarioService {
             userExistente.setUnidade(null);
         }
 
-        usuarioMapper.updateEntityFromDto(dto, userExistente);
         return usuarioMapper.toDTOResponse(usuarioRepository.save(userExistente), baseUrl);
     }
 
