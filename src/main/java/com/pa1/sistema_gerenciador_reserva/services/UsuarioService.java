@@ -86,6 +86,13 @@ public class UsuarioService {
             userExistente.setRoles(new HashSet<>(dto.getRoles()));
         }
 
+        if (dto.getId_unidade() != null) {
+            Unidade unidade = unidadeRepository.findById(dto.getId_unidade()).orElseThrow();
+            userExistente.setUnidade(unidade);
+        } else {
+            userExistente.setUnidade(null);
+        }
+
         usuarioMapper.updateEntityFromDto(dto, userExistente);
         return usuarioMapper.toDTOResponse(usuarioRepository.save(userExistente), baseUrl);
     }
@@ -97,7 +104,6 @@ public class UsuarioService {
 
         var auth = SecurityContextHolder.getContext().getAuthentication();
 
-        // Substituído AccessDeniedException por ResponseStatusException (403 FORBIDDEN)
         if (!securityUserValidator.podeGerenciar(auth, user.getRoles())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Você não tem permissão para excluir este perfil.");
         }

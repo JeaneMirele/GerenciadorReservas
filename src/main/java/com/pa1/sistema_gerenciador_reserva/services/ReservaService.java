@@ -88,7 +88,7 @@ public class ReservaService {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isSindico = auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_SINDICO"));
+                .anyMatch(a -> a.getAuthority().equals("SINDICO"));
 
         if (!isSindico) {
             LocalDate hoje = LocalDate.now();

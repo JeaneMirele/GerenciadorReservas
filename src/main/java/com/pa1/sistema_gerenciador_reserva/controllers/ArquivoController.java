@@ -24,6 +24,7 @@ public class ArquivoController {
         if (nome.endsWith(".png")) contentType = "image/png";
         else if (nome.endsWith(".gif")) contentType = "image/gif";
         else if (nome.endsWith(".webp")) contentType = "image/webp";
+        else if (nome.endsWith(".avif")) contentType = "image/avif";
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
