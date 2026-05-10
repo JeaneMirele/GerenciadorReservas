@@ -31,4 +31,9 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
             @Param("horaSaida") LocalTime horaSaida,
             @Param("id") Long id
     );
+
+
+    @Query("SELECT r.horaEntrada, r.horaSaida FROM Reserva r WHERE r.local.id = :idLocal AND r.data = :data")
+    List<Object[]> getHorariosOcupados(@Param("idLocal") Long idLocal, @Param("data") LocalDate data);
+
 }

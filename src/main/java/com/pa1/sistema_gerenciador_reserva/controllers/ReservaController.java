@@ -27,6 +27,11 @@ public class ReservaController {
         return new ResponseEntity<>(reservaService.findByDate(data), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/{data}")
+    public ResponseEntity<List<?>> getHorariosOcupados(@PathVariable Long idLocal, LocalDate data){
+        return new ResponseEntity<>(reservaService.getHorariosOcupados(idLocal,data), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ReservaDTOResponse> findById(@PathVariable Long id) {
         return new ResponseEntity<>(reservaService.findById(id), HttpStatus.OK);

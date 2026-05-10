@@ -131,4 +131,8 @@ public class ReservaService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Este local já possui um agendamento para este período.");
         }
     }
+
+    public List<?> getHorariosOcupados(Long idLocal, LocalDate data){
+        return reservaRepository.getHorariosOcupados(idLocal, data);
+    }
 }
