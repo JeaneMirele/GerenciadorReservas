@@ -4,6 +4,7 @@ import com.pa1.sistema_gerenciador_reserva.dto.ReservaDTO;
 import com.pa1.sistema_gerenciador_reserva.dto.ReservaDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.services.ReservaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,8 @@ public class ReservaController {
     }
 
     @GetMapping("/{id}/{data}")
-    public ResponseEntity<List<?>> getHorariosOcupados(@PathVariable Long idLocal, LocalDate data){
-        return new ResponseEntity<>(reservaService.getHorariosOcupados(idLocal,data), HttpStatus.OK);
+    public ResponseEntity<List<?>> getHorariosOcupados(@PathVariable Long id, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  LocalDate data){
+        return new ResponseEntity<>(reservaService.getHorariosOcupados(id,data), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
