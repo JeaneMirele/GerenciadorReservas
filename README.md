@@ -6,11 +6,11 @@
 
 ---
 
-Este sistema foi desenvolvido para organizar a reserva de espaços comuns (salões de festas, churrasqueiras, quadras) em um condomínio. A solução foca em segurança, integridade de dados e facilidade de uso para Síndicos, Gerentes e Moradores.
+Este sistema foi desenvolvido para organizar a reserva de espaços comuns (salões de festas, churrasqueiras, quadras) em um condomínio. 
 
 ##  Tecnologias Utilizadas
 
-* **Java 21** & **Spring Boot 3**
+* **Java 21** & **Spring Boot 4**
 * **Spring Security** com autenticação **JWT** 
 * **PostgreSQL** 
 * **Hibernate/JPA** 
