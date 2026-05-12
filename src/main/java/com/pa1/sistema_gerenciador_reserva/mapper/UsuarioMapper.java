@@ -15,7 +15,7 @@ public interface UsuarioMapper extends GenericsMapper<Usuario, UsuarioDTO> {
     @Mapping(target = "foto", expression = "java(montarUrl(usuario.getFotoPerfil(), baseUrl))")
     UsuarioDTOResponse toDTOResponse(Usuario usuario, @Context String baseUrl);
 
-    // Sobrecarga sem baseUrl para usos que não precisam da URL (ex: toDTOCadastro)
+
     @Mapping(target = "foto", source = "fotoPerfil")
     UsuarioDTOResponse toDTOResponse(Usuario usuario);
 

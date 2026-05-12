@@ -1,9 +1,8 @@
 package com.pa1.sistema_gerenciador_reserva.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -22,6 +21,7 @@ public class Unidade {
     private Long id;
     private String bloco;
     private String apartamento;
+    @JsonIgnore
     @OneToMany(mappedBy = "unidade")
     private List<Usuario> moradores;
     private Boolean ativo = true;

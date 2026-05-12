@@ -26,7 +26,7 @@ public class UsuarioDTO{
 
         private String telefone;
 
-        private EnderecoDTOResponse endereco;
+        private EnderecoDTO endereco;
 
         private Long id_unidade;
 
