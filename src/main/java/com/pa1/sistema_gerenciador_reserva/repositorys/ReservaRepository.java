@@ -20,9 +20,9 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     @Query("SELECT COUNT(r) > 0 FROM Reserva r " +
             "WHERE r.local.id = :id_local " +
             "AND r.data = :data " +
-            "AND r.status != :status " +
-            "AND (:id IS NULL OR r.id != :id) " +
-            "AND (:horaEntrada < r.horaSaida AND :horaSaida > r.horaEntrada)")
+            "AND r.status <> :status " +
+            "AND (:id IS NULL OR r.id <> :id) " +
+            "AND NOT (r.horaSaida <= :horaEntrada OR r.horaEntrada >= :horaSaida)")
     boolean existeReservaNoMesmoHorario(
             @Param("id_local") Long id_local,
             @Param("data") LocalDate data,
