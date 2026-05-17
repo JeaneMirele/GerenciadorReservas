@@ -18,7 +18,7 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class FileStorageService {
 
-    @Value("${app.upload.dir:${user.home}/uploads}")
+    @Value("${UPLOAD_DIR:/app/uploads}")
     private String diretorioUpload;
 
 

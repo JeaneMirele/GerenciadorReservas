@@ -4,5 +4,5 @@ import com.pa1.sistema_gerenciador_reserva.domain.Usuario;
 
 import java.util.List;
 
-public record UnidadeDTO(String bloco, String apartamento, List<UsuarioDTO> moradores) {
+public record UnidadeDTO(String bloco, String apartamento) {
 }
