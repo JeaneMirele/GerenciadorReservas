@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -33,8 +35,8 @@ public class ReservaService {
         return reservaMapper.toDTOList(reservaRepository.findAll());
     }
 
-    public List<ReservaDTOResponse> findByDate(LocalDate data) {
-        List<Reserva> filtroData = reservaRepository.findByDate(data)
+    public List<ReservaDTOResponse> findByDate(LocalDate dataInicio, LocalDate dataFim) {
+        List<Reserva> filtroData = reservaRepository.findByDate(dataInicio,dataFim)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não há reservas realizadas nesta data"));
         return reservaMapper.toDTOList(filtroData);
     }
@@ -92,8 +94,8 @@ public class ReservaService {
 
         if (!isSindico) {
             LocalDate hoje = LocalDate.now();
-            if (hoje.isAfter(reserva.getData().minusDays(14))) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cancelamentos só são permitidos com no mínimo 14 dias de antecedência.");
+            if (hoje.isAfter(reserva.getData().minusDays(1))) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cancelamentos só são permitidos com no mínimo 24 horas de antecedência.");
             }
         }
 
@@ -132,7 +134,43 @@ public class ReservaService {
         }
     }
 
+    public List<ReservaDTOResponse> reservaStatus(StatusReserva status){
+        return reservaMapper.toDTOList(reservaRepository.reservaStatus(status));
+    }
+
+
     public List<?> getHorariosOcupados(Long idLocal, LocalDate data){
         return reservaRepository.getHorariosOcupados(idLocal, data);
     }
+
+    public List<String> getHorariosVagos(Long idLocal, LocalDate data) {
+        Local local = localRepository.findById(idLocal)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Local não encontrado"));
+
+        LocalTime abertura = local.getHorarioInicio();
+        LocalTime fechamento = local.getHorarioFim();
+
+        List<Object[]> ocupados = reservaRepository.getHorariosOcupados(idLocal, data);
+
+        List<LocalTime> horariosOcupados = ocupados.stream()
+                .map(obj -> LocalTime.parse(obj[0].toString().substring(0, 5)))
+                .toList();
+
+        List<String> horariosVagos = new ArrayList<>();
+        LocalTime horaAtual = abertura;
+
+        while (horaAtual.isBefore(fechamento)) {
+            if (!horariosOcupados.contains(horaAtual)) {
+                horariosVagos.add(horaAtual.toString());
+            }
+            horaAtual = horaAtual.plusHours(1);
+        }
+
+        return horariosVagos;
+    }
+
+    public List<ReservaDTOResponse> reservaPorMorador(Long id){
+        return reservaMapper.toDTOList(reservaRepository.reservaPorMorador(id));
+    }
+
 }

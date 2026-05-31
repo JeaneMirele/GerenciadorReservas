@@ -60,7 +60,7 @@ public class LoginController {
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponseDTO> atualizarToken(@RequestBody @Valid TokenResponseDTO request) {
         return authService.findByToken(request.refreshToken())
-                .map(authService::verificarExpiracao) // Lança 401 via ResponseStatusException se expirado
+                .map(authService::verificarExpiracao)
                 .map(TokenLife::getUsuario)
                 .map(usuario -> {
                     String token = jwtService.gerarToken(usuario);

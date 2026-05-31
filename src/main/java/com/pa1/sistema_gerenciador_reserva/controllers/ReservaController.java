@@ -1,5 +1,6 @@
 package com.pa1.sistema_gerenciador_reserva.controllers;
 
+import com.pa1.sistema_gerenciador_reserva.domain.StatusReserva;
 import com.pa1.sistema_gerenciador_reserva.dto.ReservaDTO;
 import com.pa1.sistema_gerenciador_reserva.dto.ReservaDTOResponse;
 import com.pa1.sistema_gerenciador_reserva.services.ReservaService;
@@ -23,14 +24,15 @@ public class ReservaController {
         return new ResponseEntity<>(reservaService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping(params = "data")
-    public ResponseEntity<List<ReservaDTOResponse>> findByDate(@RequestParam LocalDate data) {
-        return new ResponseEntity<>(reservaService.findByDate(data), HttpStatus.OK);
+    @GetMapping("/data")
+    public ResponseEntity<List<ReservaDTOResponse>> findByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+                                                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim) {
+        return new ResponseEntity<>(reservaService.findByDate(dataInicio, dataFim), HttpStatus.OK);
     }
 
     @GetMapping("/{id}/{data}")
-    public ResponseEntity<List<?>> getHorariosOcupados(@PathVariable Long id, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  LocalDate data){
-        return new ResponseEntity<>(reservaService.getHorariosOcupados(id,data), HttpStatus.OK);
+    public ResponseEntity<List<?>> getHorariosDisponiveis(@PathVariable Long id, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  LocalDate data){
+        return new ResponseEntity<>(reservaService.getHorariosVagos(id,data), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -54,5 +56,16 @@ public class ReservaController {
     public ResponseEntity<ReservaDTOResponse> cancelar (@PathVariable Long id){
         ReservaDTOResponse reservaCancelada = reservaService.cancelar(id);
         return ResponseEntity.status(HttpStatus.OK).body(reservaCancelada);
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<ReservaDTOResponse>> statusReserva(@PathVariable StatusReserva status){
+        return new ResponseEntity<>(reservaService.reservaStatus(status), HttpStatus.OK);
+    }
+
+
+    @GetMapping("/morador/{id}")
+    public ResponseEntity<List<ReservaDTOResponse>> ReservaPorMorador(@PathVariable Long id){
+        return new ResponseEntity<>(reservaService.reservaPorMorador(id), HttpStatus.OK);
     }
 }

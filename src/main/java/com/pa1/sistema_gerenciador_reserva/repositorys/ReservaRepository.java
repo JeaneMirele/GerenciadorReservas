@@ -1,5 +1,6 @@
 package com.pa1.sistema_gerenciador_reserva.repositorys;
 
+import com.pa1.sistema_gerenciador_reserva.domain.Local;
 import com.pa1.sistema_gerenciador_reserva.domain.Reserva;
 import com.pa1.sistema_gerenciador_reserva.domain.Role;
 import com.pa1.sistema_gerenciador_reserva.domain.StatusReserva;
@@ -14,8 +15,8 @@ import java.util.Optional;
 
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
-    @Query("SELECT r FROM Reserva r JOIN FETCH r.morador WHERE r.data = :data")
-    Optional<List<Reserva>> findByDate(LocalDate data);
+    @Query("SELECT r FROM Reserva r JOIN FETCH r.morador WHERE r.data >= :dataInicio and r.data <= :dataFim ")
+    Optional<List<Reserva>> findByDate(LocalDate dataInicio, LocalDate dataFim);
 
     @Query("SELECT COUNT(r) > 0 FROM Reserva r " +
             "WHERE r.local.id = :id_local " +
@@ -36,4 +37,10 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     @Query("SELECT r.horaEntrada, r.horaSaida FROM Reserva r WHERE r.local.id = :idLocal AND r.data = :data and r.status <> 'CANCELADA'")
     List<Object[]> getHorariosOcupados(@Param("idLocal") Long idLocal, @Param("data") LocalDate data);
 
+
+    @Query("SELECT r FROM Reserva r WHERE r.status = :status ")
+    List<Reserva> reservaStatus(StatusReserva status);
+
+    @Query("SELECT r FROM Reserva r JOIN FETCH r.morador m WHERE m.id = :id ")
+    List<Reserva> reservaPorMorador(Long id);
 }
