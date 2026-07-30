@@ -1,193 +1,124 @@
-# Sistema de Gerenciamento de Reservas - Condomínio
+# Condominium Reservation API
 
-![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.4-brightgreen?logo=springboot&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-latest-blue?logo=postgresql&logoColor=white)
+![Java](https://img.shields.io/badge/Java-21-333333?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.4-333333?logo=springboot&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-latest-333333?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-333333?logo=docker&logoColor=white)
 
----
+A robust and scalable RESTful API designed to manage common area reservations (event halls, sports courts, barbecue areas) within residential complexes. Built with Java 21 and Spring Boot 3, this system implements a strict Role-Based Access Control (RBAC) architecture, secure JWT authentication, and automated data mapping.
 
-Este sistema foi desenvolvido para organizar a reserva de espaços comuns (salões de festas, churrasqueiras, quadras) em um condomínio. 
+## ⚙️ Tech Stack & Architecture
 
-##  Tecnologias Utilizadas
+*   **Core:** Java 21, Spring Boot 3.4.4
+*   **Database & ORM:** PostgreSQL, Spring Data JPA, Hibernate
+*   **Security:** Spring Security, JWT (JSON Web Tokens)
+*   **Mapping & Boilerplate:** MapStruct, Lombok
+*   **Infrastructure:** Docker, Docker Compose
 
-* **Java 21** & **Spring Boot 4**
-* **Spring Security** com autenticação **JWT** 
-* **PostgreSQL** 
-* **Hibernate/JPA** 
-* **Docker & Docker Compose** 
-* **Lombok** 
-* **MapStruct** 
----
+## 🔐 Security & Authentication Flow
 
-##  Configuração do Ambiente (`.env`)
+The application implements a highly secure, state-aware authentication lifecycle to ensure strict access control and data integrity. 
 
-Para rodar o projeto, é necessário criar um arquivo `.env` na raiz do diretório para gerenciar as variáveis de ambiente sensíveis. 
-Exemplo de conteúdo para o `.env`:
+1.  **Account Provisioning:** The Administrator provisions a Manager account. The system generates a temporary UUID-based password.
+2.  **Initial Access Restriction:** Upon the first login attempt with the temporary password, the system intercepts the request and returns a `403 Forbidden` status with a `TROCA_SENHA_OBRIGATORIA` directive.
+3.  **Password Enforcement:** The user must submit the temporary password alongside a new secure password to activate the account.
+4.  **Token Issuance:** Following successful activation, standard login operations return an encrypted JWT for stateless API authorization.
+
+### Role-Based Access Control (RBAC) Matrix
+
+The system enforces a hierarchical permission model:
+
+| Role | Domain Responsibility | Provisioned By |
+| :--- | :--- | :--- |
+| **SINDICO (Admin)** | Full system administration. Manages locations, Managers, and global settings. | System / Admin |
+| **GERENTE (Manager)** | Operational management. Handles Resident onboarding and oversees global reservations. | Admin |
+| **MORADOR (Resident)** | End-user level. Restricted to viewing availability and managing personal reservations. | Manager |
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+*   Docker and Docker Compose
+*   A configured `.env` file in the root directory
+
+### Environment Configuration
+
+Create a `.env` file in the project root containing your environment variables:
 
 ```env
-# Configurações do Banco de Dados
 DATABASE_HOST=db-reservas
 DATABASE_PORT=5432
 DATABASE_NAME=condominio_db
 DATABASE_USERNAME=postgres
-DATABASE_PASSWORD=senha_segura
-
-# Segurança (JWT)
-# Gere uma chave forte para a assinatura dos tokens
-SECURITY_KEY=chave_secreta_jwt
+DATABASE_PASSWORD=your_secure_password
+SECURITY_KEY=your_secure_jwt_key
 ```
 
-Dica: Para gerar uma chave segura para o SECURITY_KEY, você pode executar o seguinte comando no seu terminal:
+To generate a cryptographically secure key for the `SECURITY_KEY`, run the following command in your terminal:
 
-```Bash
+```bash
 openssl rand -base64 64
 ```
----
+*   **What it does:** This command utilizes the OpenSSL library to generate 64 bytes of cryptographically secure pseudo-random data and encodes it into a Base64 format.
+*   **What it returns:** It outputs a long, randomized string (e.g., `uD3...==`) that is highly resistant to brute-force attacks, making it ideal for securely signing JSON Web Tokens.
 
-## Execução com Docker
+### Running the Application
 
-A imagem está disponível no **Docker Hub**
+Deploy the application and its database containerized environment using Docker:
 
-### Pré-requisitos
-* Docker e Docker Compose instalados.
-* Arquivo `.env` configurado na raiz.
+```bash
+docker-compose up -d
+```
+*   **What it does:** This command reads the `docker-compose.yml` file, builds the application image (if not already built or pulled from Docker Hub), and starts both the database and the API containers in detached mode (in the background).
+*   **What it returns:** It outputs the creation and startup status of the network, volumes, and containers, allowing your terminal to remain free for other commands while the application runs at `http://localhost:8080`.
 
- **Suba os serviços:**
-   ```bash
-   docker-compose up -d
-````
----
-O Docker irá baixar automaticamente a imagem 986807/gerenciador-reservas:latest e configurar o banco de dados.
+## 📖 API Documentation
 
-A API estará disponível em http://localhost:8080.
+The API is fully documented using OpenAPI/Swagger. Once the application is running, access the interactive documentation to explore and test endpoints:
 
----
+**Swagger UI:** `http://localhost:8080/swagger-ui/index.html`
 
-## Documentação da API (Swagger)
-Com a aplicação rodando, você pode acessar a documentação interativa dos endpoints e testar as requisições diretamente pelo navegador:
+### Quick Test Guide
 
-URL: http://localhost:8080/swagger-ui/index.html
+A default Admin and Manager are pre-configured for initial environment testing.
 
----
-
-### Hierarquia de Acessos (Roles)
-
-O sistema utiliza um modelo de permissões em cascata para garantir que cada usuário gerencie apenas o que lhe cabe:
-
-| Papel (Role) | Responsabilidade | Criado por |
-| :--- | :--- | :--- |
-| **SINDICO** | Administrador total. Gerencia os espaços (locais), novos Síndicos e Gerentes. | Sistema / Outro Síndico |
-| **GERENTE** | Operacional. Responsável pelo cadastro e gestão dos Moradores e supervisão de reservas. | Síndico |
-| **MORADOR** | Usuário do condomínio. Pode visualizar locais e gerenciar suas próprias reservas. | Gerente |
-
-## Fluxo de Autenticação e Segurança
-
-O sistema implementa um fluxo rigoroso de acesso:
-
-1.  **Cadastro pelo Síndico:** O síndico cadastra o gerente, e o sistema gera uma senha provisória (UUID).
-2.  **login:** O gerente tenta o login com a senha provisória. O sistema retorna `403 Forbidden` com a mensagem `TROCA_SENHA_OBRIGATORIA`.
-3.  **Troca de senha**:No primeiro acesso, o sistema solicita a troca de senha, requisitando a senha provisoria e a senha definitiva.
-4.  **Ativação:** Após a troca bem-sucedida, o usuário deve realizar o login novamente com a senha definitiva para receber o **JWT**.
----
-
-## Como Testar 
-Para facilitar o teste inicial, o sistema possui um usuário Síndico, e um Gerente pré-cadastrado
-
-Credenciais do Síndico:
-````json
-{
-	"email": "sindico@sistema.com",
-"senha":"sindico123"
-}
-````
-Credenciais do Gerente:
-````json
-{
-	"email": "gerente@sistema.com",
- "senha": "gerente123"
-}
-````
-
-### Passo a Passo:
-
-Faça login com o perfil Gerente 
-- Endpoint: POST /auth/login
-
-Copie o jwt e cole na requisição de criação de usuários
-- Endpoint: POST /usuarios
-
-Exemplo Body (JSON):
-
-````json
-{
-    "nome": "Rafaela",
-    "email": "morador@condominio.com",
-    "cpf": "684.157.180-04",
-    "telefone": "8493772772",
-    "roles": ["MORADOR"]
-}
-````
-  
-2. Primeiro Acesso (Troca de Senha):
-Como o usuário é novo, você deve primeiro trocar a senha provisória pela definitiva no endpoint de primeiro acesso para ativar a conta.
-
-- Endpoint: POST /auth/primeiro-acesso
-
+**Admin Credentials:**
 ```json
-
 {
-  "email": "morador@condominio.com",
-  "senhaProvisoria": "43kmr4",
-  "novaSenha": "NovaSenhaSegura123"
+  "email": "sindico@sistema.com",
+  "senha": "sindico123"
 }
-````
+```
 
-#### 2. Login e Obtenção do Token (JWT):
-Após a troca bem-sucedida, realize o login para receber o Token de acesso (JWT).
-
-- Endpoint: POST /auth/login
-
-
-````json
+**Manager Credentials:**
+```json
 {
-  "email": "morador@condominio.com",
-  "senha": "SuaNovaSenhaSegura123"
+  "email": "gerente@sistema.com",
+  "senha": "gerente123"
 }
-````
+```
 
-#### 3. Autorizando no Swagger:
+1.  Authenticate via `POST /auth/login` using the Manager credentials.
+2.  Extract the JWT from the response.
+3.  Inject the JWT into the Swagger UI by clicking **Authorize** and entering `Bearer <your_token>`.
+4.  Proceed to provision a new Resident (`MORADOR`) via `POST /usuarios`.
+5.  Execute the first-access workflow (`POST /auth/primeiro-acesso`) to activate the newly created Resident account.
 
-- Acesse o Swagger UI.
+## 📡 Core Endpoints
 
-- No topo da página, clique no botão Authorize.
-
-- No campo de valor, digite Bearer  seguido do token copiado (Exemplo: Bearer eyJhbG...).
-
-- Clique em Authorize e depois em Close.
-
-Nota: Agora todos os endpoints restritos à role MORADOR estarão liberados para teste.
-
-## Endpoints
-### 🔑 Guia de Endpoints por Perfil (RBAC)
-
-| Categoria | Endpoint | Síndico | Gerente | Morador |
+| Resource Category | Endpoint | Admin | Manager | Resident |
 | :--- | :--- | :---: | :---: | :---: |
-| **Autenticação** | `POST /auth/login` | ✅ | ✅ | ✅ |
-| **Autenticação** | `POST /auth/primeiro-acesso` | ✅ | ✅ | ✅ |
-| **Autenticação** | `POST /auth/refresh` | ✅ | ✅ | ✅ |
-| **Usuários** | `POST /usuarios` (Criar novo) | ✅ | ✅ | ❌ |
-| **Usuários** | `GET /usuarios` (Listar todos) | ✅ | ✅ | ❌ |
-| **Usuários** | `GET /usuarios/email/{email}` | ✅ | ✅ | ❌ |
-| **Usuários** | `PATCH /usuarios/meu-perfil/foto` | ✅ | ✅ | ✅ |
-| **Usuários** | `DELETE /usuarios/{id}` | ✅ | ❌ | ❌ |
-| **Locais** | `POST /locais` (Cadastrar Área) | ✅ | ❌ | ❌ |
-| **Locais** | `GET /locais` (Ver Áreas Comuns) | ✅ | ✅ | ✅ |
-| **Locais** | `PUT /locais/{id}` (Editar) | ✅ | ❌ | ❌ |
-| **Locais** | `PATCH /locais/{id}/foto` | ✅ | ❌ | ❌ |
-| **Reservas** | `POST /reservas` (Realizar Reserva) | ✅ | ✅ | ✅ |
-| **Reservas** | `GET /reservas` (Filtrar por data) | ✅ | ✅ | ✅ |
-| **Reservas** | `DELETE /reservas/{id}` (Cancelar) | ✅ | ✅ | ✅ |
-| **Unidades** | `POST /unidades` (Cadastrar apto) | ✅ | ✅ | ❌ |
-| **Unidades** | `GET /unidades` (Listar unidades) | ✅ | ✅ | ❌ |
-| **Arquivos** | `GET /arquivos/{nome}` (Ver fotos) | ✅ | ✅ | ✅ |
-
+| **Authentication** | `POST /auth/login` | ✅ | ✅ | ✅ |
+| **Authentication** | `POST /auth/primeiro-acesso` | ✅ | ✅ | ✅ |
+| **Authentication** | `POST /auth/refresh` | ✅ | ✅ | ✅ |
+| **Users** | `POST /usuarios` | ✅ | ✅ | ❌ |
+| **Users** | `GET /usuarios` | ✅ | ✅ | ❌ |
+| **Users** | `PATCH /usuarios/meu-perfil/foto` | ✅ | ✅ | ✅ |
+| **Locations** | `POST /locais` | ✅ | ❌ | ❌ |
+| **Locations** | `GET /locais` | ✅ | ✅ | ✅ |
+| **Locations** | `PUT /locais/{id}` | ✅ | ❌ | ❌ |
+| **Reservations** | `POST /reservas` | ✅ | ✅ | ✅ |
+| **Reservations** | `GET /reservas` | ✅ | ✅ | ✅ |
+| **Reservations** | `DELETE /reservas/{id}` | ✅ | ✅ | ✅ |
+| **Units** | `POST /unidades` | ✅ | ✅ | ❌ |
+| **Media** | `GET /arquivos/{nome}` | ✅ | ✅ | ✅ |
